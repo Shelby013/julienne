@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Suivi Julienne – 8 Semaines</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e0c10;
+    --surface: #17141c;
+    --card: #1e1a27;
+    --border: #2e2840;
+    --accent: #c89fff;
+    --accent2: #ff9fc8;
+    --gold: #f5c97a;
+    --text: #f0eaf8;
+    --muted: #8a7fa0;
+    --success: #7affb8;
+    --phase1: #7a9fff;
+    --phase2: #c89fff;
+    --phase3: #ff9fc8;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+  }
+
+  /* HEADER */
+  .hero {
+    padding: 60px 40px 40px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -100px; left: 50%;
+    transform: translateX(-50%);
+    width: 600px; height: 400px;
+    background: radial-gradient(ellipse, rgba(200,159,255,0.15) 0%, transparent 70%);
+    pointer-events: none;
+  }
+  .hero-label {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 16px;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(36px, 6vw, 64px);
+    font-weight: 900;
+    line-height: 1.1;
+    background: linear-gradient(135deg, var(--text) 30%, var(--accent));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .hero-sub {
+    margin-top: 12px;
+    color: var(--muted);
+    font-size: 15px;
+    font-weight: 300;
+  }
+
+  /* PHASES BAR */
+  .phases-bar {
+    display: flex;
+    gap: 12px;
+    padding: 0 40px 40px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .phase-badge {
+    padding: 8px 20px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    border: 1px solid;
+  }
+  .phase-badge.p1 { background: rgba(122,159,255,0.12); border-color: var(--phase1); color: var(--phase1); }
+  .phase-badge.p2 { background: rgba(200,159,255,0.12); border-color: var(--phase2); color: var(--phase2); }
+  .phase-badge.p3 { background: rgba(255,159,200,0.12); border-color: var(--phase3); color: var(--phase3); }
+
+  /* MAIN LAYOUT */
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 20px 80px;
+  }
+
+  /* WEEK NAV */
+  .week-nav {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-bottom: 40px;
+  }
+  .week-btn {
+    width: 52px; height: 52px;
+    border-radius: 14px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+  }
+  .week-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .week-btn.active { background: var(--accent); border-color: var(--accent); color: #0e0c10; font-weight: 700; }
+  .week-btn.done::after {
+    content: '✓';
+    position: absolute;
+    top: -6px; right: -6px;
+    width: 18px; height: 18px;
+    background: var(--success);
+    color: #0e0c10;
+    border-radius: 50%;
+    font-size: 10px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700;
+  }
+  .week-btn.p1-btn.active { background: var(--phase1); border-color: var(--phase1); }
+  .week-btn.p2-btn.active { background: var(--phase2); border-color: var(--phase2); }
+  .week-btn.p3-btn.active { background: var(--phase3); border-color: var(--phase3); }
+
+  /* SECTION */
+  .section {
+    margin-bottom: 28px;
+  }
+  .section-title {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* CARD */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 24px;
+  }
+
+  /* WEEK HEADER CARD */
+  .week-header-card {
+    background: linear-gradient(135deg, var(--card) 0%, rgba(200,159,255,0.06) 100%);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .week-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 32px;
+    font-weight: 900;
+  }
+  .week-phase-tag {
+    padding: 6px 16px;
+    border-radius: 100px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+  .week-date-input {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 8px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+  }
+
+  /* SCORE GRID */
+  .score-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+  }
+  .score-item label {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+  }
+  .score-stars {
+    display: flex;
+    gap: 4px;
+  }
+  .star {
+    width: 28px; height: 28px;
+    border-radius: 8px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 14px;
+    transition: all 0.15s;
+  }
+  .star:hover, .star.active { background: rgba(200,159,255,0.2); border-color: var(--accent); }
+
+  /* MENSURATIONS */
+  .mensur-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 14px;
+  }
+  .field-group label {
+    display: block;
+    font-size: 11px;
+    color: var(--muted);
+    margin-bottom: 6px;
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+  .field-group input, .field-group textarea, .field-group select {
+    width: 100%;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 10px 14px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    transition: border-color 0.2s;
+  }
+  .field-group input:focus, .field-group textarea:focus, .field-group select:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .field-group textarea { resize: vertical; min-height: 80px; }
+  .unit {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .input-with-unit {
+    position: relative;
+  }
+  .input-with-unit input { padding-right: 36px; }
+  .input-with-unit .unit-badge {
+    position: absolute;
+    right: 12px; top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    font-size: 12px;
+  }
+
+  /* SÉANCES TABLE */
+  .seances-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .seance-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 16px;
+  }
+  .seance-card h4 {
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+  .seance-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+    font-size: 13px;
+    color: var(--muted);
+  }
+  .seance-check input[type="checkbox"] {
+    width: 18px; height: 18px;
+    accent-color: var(--accent);
+    cursor: pointer;
+  }
+  .seance-check.checked { color: var(--text); }
+
+  /* CHARGES TABLE */
+  .charges-table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  .charges-table th {
+    text-align: left;
+    font-size: 10px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--muted);
+    padding: 0 8px 10px;
+  }
+  .charges-table td {
+    padding: 4px 8px;
+  }
+  .charges-table td:first-child {
+    font-size: 13px;
+    color: var(--text);
+    padding-right: 16px;
+    white-space: nowrap;
+  }
+  .charges-table input {
+    width: 80px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 6px 10px;
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    text-align: center;
+  }
+  .charges-table input:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+
+  /* CYCLE */
+  .cycle-row {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .cycle-toggle {
+    display: flex;
+    gap: 8px;
+  }
+  .cycle-btn {
+    padding: 8px 16px;
+    border-radius: 10px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: 'DM Sans', sans-serif;
+  }
+  .cycle-btn:hover { border-color: var(--accent2); }
+  .cycle-btn.active { background: rgba(255,159,200,0.15); border-color: var(--accent2); color: var(--accent2); }
+
+  /* PHOTOS */
+  .photos-row {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .photo-zone {
+    flex: 1;
+    min-width: 140px;
+    border: 2px dashed var(--border);
+    border-radius: 14px;
+    padding: 20px;
+    text-align: center;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    font-size: 12px;
+    color: var(--muted);
+  }
+  .photo-zone:hover { border-color: var(--accent); color: var(--accent); }
+  .photo-zone .icon { font-size: 24px; margin-bottom: 6px; }
+
+  /* SAVE BTN */
+  .save-btn {
+    width: 100%;
+    padding: 16px;
+    background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+    border: none;
+    border-radius: 14px;
+    color: #0e0c10;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 700;
+    cursor: pointer;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: opacity 0.2s, transform 0.1s;
+    margin-top: 10px;
+  }
+  .save-btn:hover { opacity: 0.9; }
+  .save-btn:active { transform: scale(0.99); }
+
+  /* TOAST */
+  .toast {
+    position: fixed;
+    bottom: 30px; left: 50%;
+    transform: translateX(-50%) translateY(100px);
+    background: var(--success);
+    color: #0e0c10;
+    padding: 12px 28px;
+    border-radius: 100px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    z-index: 999;
+  }
+  .toast.show { transform: translateX(-50%) translateY(0); }
+
+  /* PROGRESS OVERVIEW */
+  .progress-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 28px;
+    margin-bottom: 40px;
+  }
+  .progress-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px;
+    margin-bottom: 20px;
+    color: var(--text);
+  }
+  .progress-weeks {
+    display: flex;
+    gap: 6px;
+    align-items: flex-end;
+    height: 60px;
+    margin-bottom: 8px;
+  }
+  .prog-bar-wrap {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    height: 100%;
+    justify-content: flex-end;
+  }
+  .prog-bar {
+    width: 100%;
+    background: var(--border);
+    border-radius: 4px;
+    transition: height 0.5s ease;
+    min-height: 4px;
+  }
+  .prog-bar.filled { background: linear-gradient(180deg, var(--accent), var(--accent2)); }
+  .prog-label {
+    font-size: 10px;
+    color: var(--muted);
+  }
+  .note-week {
+    font-size: 11px;
+    color: var(--muted);
+    text-align: center;
+    margin-top: 4px;
+  }
+
+  /* NUTRITION SECTION */
+  .nutrition-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 12px;
+  }
+  .macro-box {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 14px;
+    text-align: center;
+  }
+  .macro-box .val {
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+  }
+  .macro-box .lbl {
+    font-size: 10px;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-top: 2px;
+  }
+  .macro-box input {
+    width: 100%;
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--border);
+    color: var(--accent);
+    font-family: 'Playfair Display', serif;
+    font-size: 22px;
+    font-weight: 700;
+    text-align: center;
+    padding: 0 0 4px;
+  }
+  .macro-box input:focus { outline: none; border-bottom-color: var(--accent); }
+
+  /* MOTIVATIONAL QUOTE */
+  .quote-block {
+    text-align: center;
+    padding: 30px 20px;
+    color: var(--muted);
+    font-style: italic;
+    font-size: 15px;
+    border-top: 1px solid var(--border);
+    margin-top: 40px;
+  }
+
+  @media (max-width: 600px) {
+    .hero { padding: 40px 20px 30px; }
+    .phases-bar { padding: 0 20px 30px; }
+    .seances-grid { grid-template-columns: 1fr; }
+    .charges-table td:first-child { font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-label">Programme Transformation</div>
+  <h1>Julienne</h1>
+  <div class="hero-sub">Prise de masse & Physique Fit · 8 Semaines</div>
+</div>
+
+<div class="phases-bar">
+  <div class="phase-badge p1">Phase 1 · S1–S2 · Adaptation</div>
+  <div class="phase-badge p2">Phase 2 · S3–S5 · Progression</div>
+  <div class="phase-badge p3">Phase 3 · S6–S8 · Intensification</div>
+</div>
+
+<div class="main">
+
+  <!-- OVERVIEW BAR -->
+  <div class="progress-card">
+    <div class="progress-title">Progression globale</div>
+    <div class="progress-weeks" id="progressBars"></div>
+    <div style="display:flex;gap:6px;" id="progressLabels"></div>
+  </div>
+
+  <!-- WEEK NAVIGATION -->
+  <div class="week-nav" id="weekNav"></div>
+
+  <!-- DYNAMIC WEEK CONTENT -->
+  <div id="weekContent"></div>
+
+  <div class="quote-block">"Le corps accomplit ce que l'esprit croit possible." 🌿</div>
+</div>
+
+<div class="toast" id="toast">✓ Semaine sauvegardée !</div>
+
+<script>
+const EXERCISES = {
+  J1: ['Hip Thrust Machine', 'Presse Inclinée Pieds Hauts', 'Romanian Deadlift', 'Leg Curl Allongé'],
+  J2: ['Rowing Machine', 'Chest Press Machine', 'Tirage Vertical', 'Élévations Latérales'],
+  J3: ['Sled Hack Squat', 'Leg Extension', 'Bulgarian Split Squat', 'Leg Press Unilatéral'],
+  J4: ['Hip Thrust', 'Cable Kickback', 'Leg Curl', 'Abduction Machine', 'Walking Lunges']
+};
+
+const WEEK_PHASES = {
+  1:'p1',2:'p1',3:'p2',4:'p2',5:'p2',6:'p3',7:'p3',8:'p3'
+};
+const PHASE_NAMES = { p1:'Adaptation', p2:'Progression', p3:'Intensification' };
+const PHASE_COLORS = { p1:'var(--phase1)', p2:'var(--phase2)', p3:'var(--phase3)' };
+
+const KCAL_BY_WEEK = {
+  1:1900,2:1900,3:2100,4:2100,5:2100,6:2300,7:2300,8:2400
+};
+
+let currentWeek = 1;
+let data = JSON.parse(localStorage.getItem('julienne_suivi') || '{}');
+
+function save() {
+  localStorage.setItem('julienne_suivi', JSON.stringify(data));
+}
+
+function getWeekData(w) {
+  if (!data[w]) data[w] = {
+    date: '',
+    energie: 0, sommeil: 0, motivation: 0, douleurs: 0,
+    poids: '', tourTaille: '', tourHanches: '', tourCuisses: '', tourBras: '',
+    seances: { J1: false, J2: false, J3: false, J4: false },
+    charges: {},
+    kcal: '', proteines: '', lipides: '', glucides: '',
+    cycle: 'non',
+    commentaire: '',
+    ressenti: '',
+    objectifSemaine: '',
+    done: false
+  };
+  return data[w];
+}
+
+function buildNav() {
+  const nav = document.getElementById('weekNav');
+  nav.innerHTML = '';
+  for (let w = 1; w <= 8; w++) {
+    const p = WEEK_PHASES[w];
+    const btn = document.createElement('button');
+    btn.className = `week-btn ${p}-btn${w === currentWeek ? ' active' : ''}${data[w]?.done ? ' done' : ''}`;
+    btn.textContent = w;
+    btn.onclick = () => { currentWeek = w; buildNav(); buildContent(); };
+    nav.appendChild(btn);
+  }
+}
+
+function buildProgressBars() {
+  const bars = document.getElementById('progressBars');
+  const labels = document.getElementById('progressLabels');
+  bars.innerHTML = ''; labels.innerHTML = '';
+  for (let w = 1; w <= 8; w++) {
+    const d = data[w];
+    const score = d?.done ? 100 : (d?.energie || 0) * 20;
+    const filled = score > 0;
+    const wrap = document.createElement('div');
+    wrap.className = 'prog-bar-wrap';
+    wrap.innerHTML = `<div class="prog-bar${filled?' filled':''}" style="height:${Math.max(4, score * 0.56)}px"></div>`;
+    bars.appendChild(wrap);
+    const lbl = document.createElement('div');
+    lbl.className = 'prog-label';
+    lbl.textContent = `S${w}`;
+    labels.appendChild(lbl);
+  }
+}
+
+function buildContent() {
+  const w = currentWeek;
+  const p = WEEK_PHASES[w];
+  const d = getWeekData(w);
+  const kcal = KCAL_BY_WEEK[w];
+  const content = document.getElementById('weekContent');
+
+  content.innerHTML = `
+    <!-- WEEK HEADER -->
+    <div class="week-header-card">
+      <div>
+        <div class="week-title" style="color:${PHASE_COLORS[p]}">Semaine ${w}</div>
+        <div style="color:var(--muted);font-size:13px;margin-top:4px">${PHASE_NAMES[p]} · Objectif calorique : ${kcal} kcal</div>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:flex-end">
+        <div class="week-phase-tag" style="background:rgba(0,0,0,0.3);border:1px solid ${PHASE_COLORS[p]};color:${PHASE_COLORS[p]}">${PHASE_NAMES[p]}</div>
+        <input type="date" class="week-date-input" id="fieldDate" value="${d.date}" placeholder="Date du bilan">
+      </div>
+    </div>
+
+    <!-- BIEN-ÊTRE -->
+    <div class="section">
+      <div class="section-title">Bien-être & Récupération</div>
+      <div class="card">
+        <div class="score-grid">
+          ${buildStars('energie', d.energie, '⚡ Énergie générale')}
+          ${buildStars('sommeil', d.sommeil, '🌙 Qualité du sommeil')}
+          ${buildStars('motivation', d.motivation, '🔥 Motivation')}
+          ${buildStars('douleurs', d.douleurs, '💙 Douleurs / Courbatures')}
+        </div>
+      </div>
+    </div>
+
+    <!-- CYCLE -->
+    <div class="section">
+      <div class="section-title">Cycle Menstruel</div>
+      <div class="card">
+        <div class="cycle-row">
+          <span style="font-size:13px;color:var(--muted)">Période active cette semaine ?</span>
+          <div class="cycle-toggle">
+            <button class="cycle-btn${d.cycle==='oui'?' active':''}" onclick="setCycle('oui')">🌸 Oui</button>
+            <button class="cycle-btn${d.cycle==='non'?' active':''}" onclick="setCycle('non')">Non</button>
+          </div>
+        </div>
+        ${d.cycle==='oui' ? `<div style="margin-top:14px;padding:14px;background:rgba(255,159,200,0.07);border-radius:12px;border:1px solid rgba(255,159,200,0.2);font-size:13px;color:var(--accent2)">
+          🌿 Mode adapté activé : charges réduites 30–40%, Hip Thrust → Pont Fessier léger, cardio doux conseillé.
+        </div>` : ''}
+      </div>
+    </div>
+
+    <!-- SÉANCES -->
+    <div class="section">
+      <div class="section-title">Séances réalisées</div>
+      <div class="card">
+        <div class="seances-grid">
+          ${['J1','J2','J3','J4'].map(j => `
+            <div class="seance-card">
+              <h4>${j === 'J1' ? '🍑 J1 – Fessiers' : j === 'J2' ? '💪 J2 – Haut corps' : j === 'J3' ? '🦵 J3 – Quadri' : '🔁 J4 – Bas corps'}</h4>
+              <div class="seance-check${d.seances[j]?' checked':''}">
+                <input type="checkbox" id="seance_${j}" ${d.seances[j]?'checked':''} onchange="setSeance('${j}', this.checked)">
+                <label for="seance_${j}">${d.seances[j] ? 'Séance complétée ✓' : 'Pas encore faite'}</label>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+      </div>
+    </div>
+
+    <!-- CHARGES -->
+    <div class="section">
+      <div class="section-title">Charges & Performances</div>
+      <div class="card">
+        <table class="charges-table">
+          <thead><tr><th>Exercice</th><th>Charge (kg)</th><th>Reps / Notes</th></tr></thead>
+          <tbody>
+            ${Object.entries(EXERCISES).flatMap(([j, exos]) =>
+              exos.map(ex => {
+                const key = `${j}_${ex}`;
+                const val = d.charges[key] || {};
+                return `<tr>
+                  <td>${ex}</td>
+                  <td><input type="number" placeholder="—" value="${val.kg||''}" min="0" step="0.5" onchange="setCharge('${key}','kg',this.value)"></td>
+                  <td><input type="text" placeholder="notes..." value="${val.notes||''}" style="width:120px" onchange="setCharge('${key}','notes',this.value)"></td>
+                </tr>`;
+              })
+            ).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- MENSURATIONS -->
+    <div class="section">
+      <div class="section-title">Mensurations & Poids</div>
+      <div class="card">
+        <div class="mensur-grid">
+          ${buildMeasure('poids', d.poids, '⚖️ Poids', 'kg')}
+          ${buildMeasure('tourTaille', d.tourTaille, 'Tour de taille', 'cm')}
+          ${buildMeasure('tourHanches', d.tourHanches, 'Tour de hanches', 'cm')}
+          ${buildMeasure('tourCuisses', d.tourCuisses, 'Tour de cuisses', 'cm')}
+          ${buildMeasure('tourBras', d.tourBras, 'Tour de bras', 'cm')}
+        </div>
+        <div style="margin-top:16px">
+          <div class="section-title" style="font-size:10px;margin-bottom:8px">📸 Photos (Face · Profil · Dos)</div>
+          <div class="photos-row">
+            <div class="photo-zone"><div class="icon">📷</div>Face</div>
+            <div class="photo-zone"><div class="icon">📷</div>Profil</div>
+            <div class="photo-zone"><div class="icon">📷</div>Dos</div>
+          </div>
+          <div style="font-size:11px;color:var(--muted);margin-top:8px;">Les photos restent sur ton téléphone — elles te permettent de visualiser ta progression 💜</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NUTRITION -->
+    <div class="section">
+      <div class="section-title">Nutrition (objectif ${kcal} kcal)</div>
+      <div class="card">
+        <div class="nutrition-grid">
+          <div class="macro-box">
+            <input type="number" id="fieldKcal" value="${d.kcal}" placeholder="${kcal}" onchange="setField('kcal',this.value)">
+            <div class="lbl">🔥 Kcal</div>
+          </div>
+          <div class="macro-box">
+            <input type="number" id="fieldProteines" value="${d.proteines}" placeholder="90" onchange="setField('proteines',this.value)">
+            <div class="lbl">🥩 Protéines (g)</div>
+          </div>
+          <div class="macro-box">
+            <input type="number" id="fieldLipides" value="${d.lipides}" placeholder="50" onchange="setField('lipides',this.value)">
+            <div class="lbl">🥑 Lipides (g)</div>
+          </div>
+          <div class="macro-box">
+            <input type="number" id="fieldGlucides" value="${d.glucides}" placeholder="300" onchange="setField('glucides',this.value)">
+            <div class="lbl">🍝 Glucides (g)</div>
+          </div>
+        </div>
+        <div style="margin-top:16px" class="field-group">
+          <label>Ressenti avec l'alimentation cette semaine</label>
+          <textarea id="fieldRessentiNutri" placeholder="Ex : j'ai eu du mal à atteindre les calories, faim dans l'après-midi..." onchange="setField('ressenti',this.value)">${d.ressenti||''}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- OBJECTIF & BILAN -->
+    <div class="section">
+      <div class="section-title">Bilan & Objectif</div>
+      <div class="card" style="display:grid;gap:16px">
+        <div class="field-group">
+          <label>🎯 Objectif de la semaine prochaine</label>
+          <textarea id="fieldObjectif" placeholder="Ex : augmenter le hip thrust de 5kg, atteindre 2100 kcal tous les jours..." onchange="setField('objectifSemaine',this.value)">${d.objectifSemaine||''}</textarea>
+        </div>
+        <div class="field-group">
+          <label>💬 Commentaires libres / message pour ton coach</label>
+          <textarea id="fieldComment" placeholder="Ressenti général, difficultés, questions..." onchange="setField('commentaire',this.value)">${d.commentaire||''}</textarea>
+        </div>
+      </div>
+    </div>
+
+    <!-- SAVE -->
+    <button class="save-btn" onclick="saveWeek()">💾 Sauvegarder la semaine ${w}</button>
+  `;
+
+  // Date listener
+  document.getElementById('fieldDate').addEventListener('change', function() {
+    data[currentWeek].date = this.value; save();
+  });
+
+  buildProgressBars();
+}
+
+function buildStars(key, val, label) {
+  return `<div class="score-item">
+    <label>${label}</label>
+    <div class="score-stars">
+      ${[1,2,3,4,5].map(i => `<div class="star${val>=i?' active':''}" onclick="setStar('${key}',${i})">
+        ${val>=i?'★':'☆'}
+      </div>`).join('')}
+    </div>
+  </div>`;
+}
+
+function buildMeasure(key, val, label, unit) {
+  return `<div class="field-group">
+    <label>${label}</label>
+    <div class="input-with-unit">
+      <input type="number" step="0.1" min="0" value="${val||''}" placeholder="—" onchange="setField('${key}',this.value)">
+      <span class="unit-badge">${unit}</span>
+    </div>
+  </div>`;
+}
+
+function setStar(key, val) {
+  data[currentWeek][key] = val; save(); buildContent();
+}
+function setSeance(j, val) {
+  data[currentWeek].seances[j] = val; save();
+}
+function setCharge(key, subkey, val) {
+  if (!data[currentWeek].charges[key]) data[currentWeek].charges[key] = {};
+  data[currentWeek].charges[key][subkey] = val; save();
+}
+function setField(key, val) {
+  data[currentWeek][key] = val; save();
+}
+function setCycle(val) {
+  data[currentWeek].cycle = val; save(); buildContent();
+}
+
+function saveWeek() {
+  // collect all current field values before marking done
+  const d = data[currentWeek];
+  const dateEl = document.getElementById('fieldDate');
+  if (dateEl) d.date = dateEl.value;
+  const kcalEl = document.getElementById('fieldKcal');
+  if (kcalEl) d.kcal = kcalEl.value;
+  const protEl = document.getElementById('fieldProteines');
+  if (protEl) d.proteines = protEl.value;
+  const lipEl = document.getElementById('fieldLipides');
+  if (lipEl) d.lipides = lipEl.value;
+  const glcEl = document.getElementById('fieldGlucides');
+  if (glcEl) d.glucides = glcEl.value;
+  const ressEl = document.getElementById('fieldRessentiNutri');
+  if (ressEl) d.ressenti = ressEl.value;
+  const objEl = document.getElementById('fieldObjectif');
+  if (objEl) d.objectifSemaine = objEl.value;
+  const comEl = document.getElementById('fieldComment');
+  if (comEl) d.commentaire = comEl.value;
+
+  d.done = true;
+  save();
+  buildNav();
+  buildProgressBars();
+
+  const toast = document.getElementById('toast');
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2500);
+}
+
+// INIT
+buildNav();
+buildContent();
+buildProgressBars();
+</script>
+</body>
+</html>
